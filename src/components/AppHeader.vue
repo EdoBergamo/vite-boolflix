@@ -67,7 +67,7 @@ export default {
       <li>Series</li>
       <li class="series-card" v-for="serie in series" :key="serie.id">
         <h2>Titolo: {{ serie.original_name }}</h2>
-        <p>Lingua: {{ serie.original_language }}</p>
+        <p>Lingua: <img :src="getLanguageFlagUrl(serie.original_language)" alt="Flag" /></p>
         <p>Voto: {{ serie.vote_average }}</p>
       </li>
     </ul>
