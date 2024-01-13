@@ -11,6 +11,7 @@ export default {
       movies: [],
       series: [],
       imageBaseUrl: "https://image.tmdb.org/t/p/",
+      stars: [1, 2, 3, 4, 5],
     };
   },
 
@@ -52,7 +53,17 @@ export default {
       return posterPath
         ? `${this.imageBaseUrl}${imageSize}/${posterPath}`
         : null;
-      },
+    },
+
+    getStarVote(vote) {
+      const averageVote = Math.round(vote / 2);
+
+      const starsArray = Array(5)
+        .fill("goldenStar", 0, averageVote)
+        .fill("grayStar", averageVote);
+
+      return starsArray;
+    },
   },
 };
 </script>
@@ -85,6 +96,12 @@ export default {
             />
           </p>
           <p>Voto: {{ media.vote_average }}</p>
+          <i
+            class="bi-star-fill"
+            v-for="(star, index) in getStarVote(media.vote_average)"
+            :class="star"
+            :key="index"
+          ></i>
         </li>
       </ul>
     </template>
@@ -105,5 +122,12 @@ export default {
     justify-content: space-between;
     align-items: center;
   }
+}
+
+.goldenStar {
+  color: #daa520;
+}
+.grayStar {
+  color: #808080;
 }
 </style>
