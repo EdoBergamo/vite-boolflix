@@ -1,36 +1,42 @@
 <script>
-import axios from 'axios';
-import { store } from '../store';
+import axios from "axios";
+import { store } from "../store";
 
 export default {
-  name: 'Header',
+  name: "Header",
   data() {
     return {
       store,
-      searchQuery: '',
+      searchQuery: "",
       movies: [],
-    }
+    };
   },
 
   computed: {
-    endpointMovie() {
-      return this.store.endpointMovie
+    apiKey() {
+      return this.store.apiKey;
     },
 
-    apiKey() {
-      return this.store.apiKey
-    }
+    getLanguageFlagUrl() {
+      return (languageCode) => {
+        if (languageCode === "en") {
+          return "https://flagcdn.com/24x18/gb.png";
+        }
+        return `https://flagcdn.com/24x18/${languageCode}.png`;
+      };
+    },
   },
 
   methods: {
     async searchMovies() {
-      const apiUrl = `${this.endpointMovie}api_key=${this.apiKey}&query=${this.searchQuery}`;
+      const movieUrl = `${this.store.endpointMovie}api_key=${this.apiKey}&query=${this.searchQuery}`;
 
-      axios.get(apiUrl)
-        .then(response => this.movies = response.data.results);
-    }
-  }
-}
+      axios
+        .get(movieUrl)
+        .then((response) => (this.movies = response.data.results));
+    },
+  },
+};
 </script>
 
 <template>
@@ -43,17 +49,20 @@ export default {
     <ul class="movie-list" v-if="movies.length > 0">
       <li class="movie-card" v-for="movie in movies" :key="movie.id">
         <h2>{{ movie.title }}</h2>
-        <p>Titolo: {{  movie.original_title }}</p>
-        <p>Lingua: {{  movie.original_language }}</p>
-        <p>Voto: {{  movie.vote_average }}</p>
+        <p>Titolo: {{ movie.original_title }}</p>
+        <p>
+          Lingua:
+          <img :src="getLanguageFlagUrl(movie.original_language)" alt="Flag" />
+        </p>
+        <p>Voto: {{ movie.vote_average }}</p>
       </li>
     </ul>
   </div>
 </template>
 
 <style lang="scss" scoped>
-@use '../styles/general.scss';
-@use '../styles/partials/variables' as *;
+@use "../styles/general.scss";
+@use "../styles/partials/variables" as *;
 
 * {
   background: #000;
