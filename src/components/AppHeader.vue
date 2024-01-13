@@ -10,6 +10,7 @@ export default {
       searchQuery: "",
       movies: [],
       series: [],
+      imageBaseUrl: "https://image.tmdb.org/t/p/",
     };
   },
 
@@ -34,11 +35,24 @@ export default {
       const seriesUrl = `${this.store.endpointSeries}api_key=${this.apiKey}&query=${this.searchQuery}`;
 
       const movieResponse = await axios.get(movieUrl);
-      this.movies = movieResponse.data.results;
+      this.movies = movieResponse.data.results.map((movie) => ({
+        ...movie,
+        poster_url: this.getImageUrl(movie.poster_path),
+      }));
 
       const seriesResponse = await axios.get(seriesUrl);
-      this.series = seriesResponse.data.results;
+      this.series = seriesResponse.data.results.map((serie) => ({
+        ...serie,
+        poster_url: this.getImageUrl(serie.poster_path),
+      }));
     },
+
+    getImageUrl(posterPath) {
+      const imageSize = "w342";
+      return posterPath
+        ? `${this.imageBaseUrl}${imageSize}/${posterPath}`
+        : null;
+      },
   },
 };
 </script>
@@ -50,30 +64,30 @@ export default {
       <button @click="searchMovies">Search</button>
     </div>
 
-    <ul class="movie-list" v-if="movies.length > 0">
-      <li>Movies</li>
-      <li class="movie-card" v-for="movie in movies" :key="movie.id">
-        <h2>{{ movie.title }}</h2>
-        <p>Titolo: {{ movie.original_title }}</p>
-        <p>
-          Lingua:
-          <img :src="getLanguageFlagUrl(movie.original_language)" alt="Flag" />
-        </p>
-        <p>Voto: {{ movie.vote_average }}</p>
-      </li>
-    </ul>
-
-    <ul class="series-list" v-if="series.length > 0">
-      <li>Series</li>
-      <li class="series-card" v-for="serie in series" :key="serie.id">
-        <h2>Titolo: {{ serie.original_name }}</h2>
-        <p>
-          Lingua:
-          <img :src="getLanguageFlagUrl(serie.original_language)" alt="Flag" />
-        </p>
-        <p>Voto: {{ serie.vote_average }}</p>
-      </li>
-    </ul>
+    <template
+      v-for="(mediaList, mediaType) in { movies: movies, series: series }"
+      :key="mediaType"
+    >
+      <ul :class="[`${mediaType}-list`]">
+        <li
+          v-for="media in mediaList"
+          :key="media.id"
+          :class="[`${mediaType}-card`]"
+        >
+          <h2>{{ media.title || media.name }}</h2>
+          <img v-if="media.poster_url" :src="media.poster_url" alt="Poster" />
+          <p>Titolo: {{ media.original_title || media.original_name }}</p>
+          <p>
+            Lingua:
+            <img
+              :src="getLanguageFlagUrl(media.original_language)"
+              alt="Flag"
+            />
+          </p>
+          <p>Voto: {{ media.vote_average }}</p>
+        </li>
+      </ul>
+    </template>
   </div>
 </template>
 
