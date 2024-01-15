@@ -24,6 +24,22 @@ export default {
       return (languageCode) => {
         if (languageCode === "en") {
           return "https://flagcdn.com/24x18/gb.png";
+        } else if (languageCode === 'uk') {
+          return "https://flagcdn.com/24x18/ua.png";
+        } else if (languageCode === 'da') {
+          return "https://flagcdn.com/24x18/dk.png";
+        } else if (languageCode === 'ja') {
+          return "https://flagcdn.com/24x18/jp.png";
+        } else if (languageCode === 'ko') {
+          return "https://flagcdn.com/24x18/kr.png";
+        } else if (languageCode === 'zh') {
+          return "https://flagcdn.com/24x18/cn.png";
+        } else if (languageCode === 'hi') {
+          return "https://flagcdn.com/24x18/in.png";
+        } else if (languageCode === 'el') {
+          return "https://flagcdn.com/24x18/gr.png";
+        } else if (languageCode === 'cs') {
+          return "https://flagcdn.com/24x18/pt.png";
         }
         return `https://flagcdn.com/24x18/${languageCode}.png`;
       };
@@ -70,10 +86,27 @@ export default {
 
 <template>
   <div>
-    <div class="search-bar">
-      <input v-model="searchQuery" placeholder="Search..." autocomplete="off" />
-      <button @click="searchMovies">Search</button>
-    </div>
+    <header>
+      <div class="container flex items-center gap-2 justify-between">
+        <div class="items-center header-first flex gap-2">
+          <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Logonetflix.png" class="img" alt="">
+          </div>
+
+          <ul class="navbar flex gap-2 items-center">
+            <li class="link-nav"><a href="https://netflix.com" target="_blank">Home</a></li>
+            <li class="link-nav"><a href="https://www.netflix.com/browse/genre/34399" target="_blank">Movies</a></li>
+            <li class="link-nav"><a href="https://www.netflix.com/browse/genre/83" target="_blank">Series</a></li>
+          </ul>
+        </div>
+
+        <div class="flex">
+          <label for="search"></label>
+          <input v-model="searchQuery" id="search" placeholder="Search..." autocomplete="off" />
+          <button @click="searchMovies">Search</button>
+        </div>
+      </div>
+    </header>
 
     <template
       v-for="(mediaList, mediaType) in { movies: movies, series: series }"
@@ -112,15 +145,25 @@ export default {
 @use "../styles/general.scss";
 @use "../styles/partials/variables" as *;
 
-* {
-  background: #000;
-  color: $bg-gray-200;
-}
-
 .container {
-  .row {
-    justify-content: space-between;
-    align-items: center;
+  height: 100px;
+  background-color: rgb(27, 26, 26);
+  padding: 0 40px;
+  .logo {
+    width: 90px;
+  }
+
+  .link-nav {
+    line-height: 80px;
+    border-bottom: 2px inset transparent;
+    text-align: center;
+    justify-content: center;
+    color: white;
+
+    &:hover {
+      border-bottom: 2px inset #ff0000;
+      color: rgb(255, 0, 0);
+    }
   }
 }
 
